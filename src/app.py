@@ -188,6 +188,9 @@ def index():
     return redirect(url_for('login'))
 
 # ...
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Verificamos si la solicitud es una solicitud POST (enviada desde un formulario).
@@ -198,27 +201,25 @@ def login():
         else:
             login_attempts = 0
 
-        # Si ya se han realizado 3 o más intentos fallidos, se comprueba si ha pasado menos de 10 segundos desde el último intento.
-        if login_attempts >= 3:
-            now = time.time()
-            if 'last_login_attempt' in session:
-                last_attempt_time = session['last_login_attempt']
-                if now - last_attempt_time < 10:
-                    # Si han pasado menos de 10 segundos, se muestra un mensaje de bloqueo.
-                    time_remaining = int(10 - (now - last_attempt_time))
-                    flash(f'Intentos de inicio de sesión bloqueados durante {time_remaining} segundos.')
-                    return render_template('auth/login.html')
-                else:
-                    # Si han pasado más de 10 segundos, se restablece el contador de intentos.
-                    login_attempts = 0
+        now = time.time()
 
-            if 'last_login_attempt' not in session:
-                # Guardar la hora del primer intento fallido.
-                session['last_login_attempt'] = now
+        # Verificar si ha pasado el período de bloqueo anterior.
+        if 'last_login_attempt' in session:
+            last_attempt_time = session['last_login_attempt']
+            if now - last_attempt_time < 10 * (login_attempts - 2):
+                # Calcular el tiempo de bloqueo escalonado.
+                time_remaining = int(10 * (login_attempts - 2) - (now - last_attempt_time))
+                flash(f'Intentos de inicio de sesión bloqueados durante {time_remaining} segundos.')
+                return render_template('auth/login.html')
 
-        # En este punto, el contador de intentos se ha restablecido o se ha superado el tiempo de bloqueo.
         # Intentamos iniciar sesión con las credenciales proporcionadas por el usuario.
-        usuario = User(0, request.form['username'], request.form['password'])
+        username = request.form['username']
+        password = request.form['password']
+        usuario = User(0, username, password)
+
+        # Imprimir credenciales inválidas y hora en la consola.
+        print(f'Intento de inicio de sesión con credenciales inválidas: Usuario={username}, Contraseña={password}, Hora={time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(now))}')
+
         usuario_logueado = ModelUser.login(db, usuario)
 
         if usuario_logueado is not None and usuario_logueado.password:
@@ -226,26 +227,25 @@ def login():
             login_user(usuario_logueado)
             session.pop('last_login_attempt', None)  # Eliminar la marca de tiempo del último intento fallido.
             session.pop('login_attempts', None)  # Restablecer los intentos fallidos.
-            return redirect(url_for('home2'))
-          #  return render_template('home.html', caracteres_asociados="", grafico="")
-    
+            return redirect(url_for('seguridad'))
         else:
             # Si las credenciales son incorrectas, se registra un intento fallido.
-            session['last_login_attempt'] = time.time()  # Registrar la hora del intento fallido.
+            session['last_login_attempt'] = now  # Registrar la hora del intento fallido.
             login_attempts += 1  # Aumentar el contador de intentos fallidos.
             session['login_attempts'] = login_attempts  # Almacenar el contador en la sesión.
 
             if login_attempts >= 3:
-                flash('Demasiados intentos fallidos. Su cuenta está bloqueada durante 10 segundos.')
-
+                # Calcular el tiempo de bloqueo escalonado.
+                block_time = 10 * (login_attempts - 2)
+                flash(f'Demasiados intentos fallidos. Su cuenta está bloqueada durante {block_time} segundos.')
 
             else:
                 flash("Usuario o contraseña no válidos.")
+
             return render_template('auth/login.html')
     else:
         # Si la solicitud no es POST, se muestra la página de inicio de sesión.
         return render_template('auth/login.html')
-
 
 # ...
 @app.route('/logout')
@@ -255,6 +255,7 @@ def logout():
     
     
 @app.route("/descifrar", methods=['POST'])
+@login_required
 def descifrar():
     texto_cifrado = request.form['textocifrado'] 
 
@@ -352,14 +353,9 @@ def descifrar():
     return render_template('index2.html', resultado=f'el textoes impresionantemente largo {output}', resultados=resultados, constante=constante, caracteres_asociados="".join(caracteres_asociados), caracteres_asociados2="".join(caracteres_asociados2),grafico=imagen_base64)
 
 
-
-@app.route('/home')
-def home():
-   return render_template('home.html')
-
-@app.route('/home2')
+@app.route('/seguridad')
 @login_required
-def home2():
+def seguridad():
    return render_template('index2.html')
 
 @app.route("/cifrar", methods=['POST','GET'])
