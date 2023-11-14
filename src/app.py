@@ -1,13 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask import session
-#from flask import jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
 from datetime import datetime, timedelta 
 import pytz
 import time
-from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, IntegerField
 from wtforms.validators import DataRequired
@@ -17,16 +14,12 @@ import io
 import base64
 import unicodedata
 
-from flask import Flask, render_template, request
-
-#from your_user_model import User
-from config import config
-
 # Models:
 from models.ModelUser import ModelUser
 
 # Entities:
 from models.entities.User import User
+from config import config
 
 app = Flask(__name__)
 csrf = CSRFProtect(app)
@@ -380,7 +373,7 @@ def status_404(error):
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])
-   # csrf.init_app(app)
+    csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
     app.run()
