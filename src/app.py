@@ -226,7 +226,7 @@ def login():
             login_user(usuario_logueado)
             session.pop('last_login_attempt', None)  # Eliminar la marca de tiempo del último intento fallido.
             session.pop('login_attempts', None)  # Restablecer los intentos fallidos.
-            return redirect(url_for('home'))
+            return redirect(url_for('home2'))
           #  return render_template('home.html', caracteres_asociados="", grafico="")
     
         else:
@@ -252,9 +252,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-
-
     
     
 @app.route("/descifrar", methods=['POST'])
@@ -352,13 +349,18 @@ def descifrar():
     else: 
         output = "el texto es invalido"
 
-    return render_template('index.html', resultado=f'el textoes impresionantemente largo {output}', resultados=resultados, constante=constante, caracteres_asociados="".join(caracteres_asociados), caracteres_asociados2="".join(caracteres_asociados2),grafico=imagen_base64)
+    return render_template('index2.html', resultado=f'el textoes impresionantemente largo {output}', resultados=resultados, constante=constante, caracteres_asociados="".join(caracteres_asociados), caracteres_asociados2="".join(caracteres_asociados2),grafico=imagen_base64)
 
 
 
 @app.route('/home')
 def home():
    return render_template('home.html')
+
+@app.route('/home2')
+@login_required
+def home2():
+   return render_template('index2.html')
 
 @app.route("/cifrar", methods=['POST','GET'])
 @login_required
@@ -378,7 +380,7 @@ def cifrar():
 
     texto_cifrado = ''.join(map(str, texto_letras))
 
-    return render_template('index.html',texto_valores_procesados=texto_cifrado)
+    return render_template('index2.html',texto_valores_procesados=texto_cifrado)
 
 @app.route('/protected')
 @login_required

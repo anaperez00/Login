@@ -3,14 +3,12 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-<h1>Bienvenido, {{ current_user.fullname }}</h1>
-<a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
-
 <h1>CIFRADO AFIN</h1>
 <!-- Sección de cifrado -->
 <div class="form-floating">
     <form action="{{url_for('cifrar')}}" method="post">
         <h2>Cifrado</h2>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <textarea class="form-control" name="textoclaro" placeholder="INGRESE EL TEXTO CLARO PARA CIFRAR"
             id="floatingTextarea1" style="width: 500px; height: 180px"></textarea>
         <input type="number" name="decimacionA" placeholder="a: Cons. Decimación"
