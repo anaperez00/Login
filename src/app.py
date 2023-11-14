@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask import session
-from flask import jsonify
+#from flask import jsonify
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
@@ -34,8 +34,6 @@ csrf = CSRFProtect(app)
 def validar_texto(texto):
     valid_chars = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
     return all(c in valid_chars for c in texto) and len(texto) >= 90
-
-
 
 valor_letra = {
     'A': 0, 
@@ -352,7 +350,6 @@ def descifrar():
 
     return render_template('index2.html', resultado=f'el textoes impresionantemente largo {output}', resultados=resultados, constante=constante, caracteres_asociados="".join(caracteres_asociados), caracteres_asociados2="".join(caracteres_asociados2),grafico=imagen_base64)
 
-
 @app.route('/seguridad')
 @login_required
 def seguridad():
@@ -367,22 +364,12 @@ def cifrar():
     desplazamientoB = int(request.form['desplazamientoB'])  # Convertir a entero
    
     texto_valores = asignar_valoresCifrado(texto_procesado)
-    
-    # Realizar la operación de multiplicación por decimacionA a los elementos numéricos de texto_valores
-    
-    operacion = [val if val == 27 else (val * decimacionA + desplazamientoB) % 27 for val in texto_valores]
-          
+
+    # Realizar la operación de multiplicación por decimacionA a los elementos numéricos de texto_valores    
+    operacion = [val if val == 27 else (val * decimacionA + desplazamientoB) % 27 for val in texto_valores]       
     texto_letras = [list(valor_letraC.keys())[list(valor_letraC.values()).index(valor)] if valor in valor_letraC.values() else valor for valor in operacion]
-
     texto_cifrado = ''.join(map(str, texto_letras))
-
     return render_template('index2.html',texto_valores_procesados=texto_cifrado)
-
-@app.route('/protected')
-@login_required
-def protected():
-    return "<h1>Esta es una vista protegida, solo para usuarios autenticados.</h1>"
-
 
 def status_401(error):
     return redirect(url_for('login'))
@@ -391,10 +378,9 @@ def status_401(error):
 def status_404(error):
     return "<h1>Página no encontrada</h1>", 404
 
-
 if __name__ == '__main__':
     app.config.from_object(config['development'])
-  #  csrf.init_app(app)
+   # csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
     app.run()
