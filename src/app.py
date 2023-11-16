@@ -380,4 +380,4 @@ if __name__ == '__main__':
     #app.run(host="0.0.0.0" ,port=80)
     #app.run(host="0.0.0.0", port=443, ssl_context=('cert.pem', 'key.pem')) 
     #app.run(host='0.0.0.0', port=443, ssl_context=('/etc/ssl/certs/ssl-cert-snakeoil.pem', '/etc/ssl/private/ssl-cert-snakeoil.key'))
-    app.run(debug=True, ssl_context=('/home/ubuntu/login/src/certificado.pem', 'clave_privada.pem/clave_privada.pem'))
+    app.run(debug=True, ssl_context=('certificado.pem', 'clave_privada.pem'))
