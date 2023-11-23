@@ -378,8 +378,8 @@ if __name__ == '__main__':
     app.register_error_handler(404, status_404)
     #app.run()
     #app.run(host="0.0.0.0" ,port=80)
-  #  app.run(host="0.0.0.0", port=443, ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
-    app.run(host="0.0.0.0", port=443, ssl_context=('/etc/letsencrypt/live/perez-ana.tech/fullchain.pem', '/etc/letsencrypt/live/perez-ana.tech/privkey.pem'))
+    app.run(host="0.0.0.0", port=443, ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
+   # app.run(host="0.0.0.0", port=443, ssl_context=('/etc/letsencrypt/live/perez-ana.tech/fullchain.pem', '/etc/letsencrypt/live/perez-ana.tech/privkey.pem'))
     
     #app.run(host="0.0.0.0", port=443, ssl_context=('cert.pem', 'key.pem')) 
     #app.run(host='0.0.0.0', port=443, ssl_context=('/etc/ssl/certs/ssl-cert-snakeoil.pem', '/etc/ssl/private/ssl-cert-snakeoil.key'))
