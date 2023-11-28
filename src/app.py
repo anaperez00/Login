@@ -13,6 +13,9 @@ from matplotlib import pyplot as plt
 import io
 import base64
 import unicodedata
+#---------
+from flask import Flask, redirect, request
+#-----
 
 # Models:
 from models.ModelUser import ModelUser
@@ -370,7 +373,13 @@ def status_401(error):
 
 def status_404(error):
     return "<h1>Página no encontrada</h1>", 404
-
+#----------------------
+@app.before_request
+def before_request():
+    if not request.is_secure and request.headers.get('X-Forwarded-Proto', 'http') != 'https':
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+#------------------------
 if __name__ == '__main__':
     app.config.from_object(config['development'])
     csrf.init_app(app)
