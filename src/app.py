@@ -14,7 +14,7 @@ import io
 import base64
 import unicodedata
 #---------
-from flask import Flask, redirect, request
+#from flask import Flask, redirect, request
 #-----
 
 # Models:
@@ -374,18 +374,19 @@ def status_401(error):
 def status_404(error):
     return "<h1>Página no encontrada</h1>", 404
 #----------------------
-@app.before_request
-def before_request():
-    if not request.is_secure and request.headers.get('X-Forwarded-Proto', 'http') != 'https':
-        url = request.url.replace('http://', 'https://', 1)
-        return redirect(url, code=301)
+#@app.before_request
+#def before_request():
+ #   if not request.is_secure and request.headers.get('X-Forwarded-Proto', 'http') != 'https':
+  #      url = request.url.replace('http://', 'https://', 1)
+   #     return redirect(url, code=301)
 #------------------------
 if __name__ == '__main__':
     app.config.from_object(config['development'])
     csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
-    app.run(host='127.0.0.1', port=80)
+    app.run(ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
+  #  app.run(host='127.0.0.1', port=80)
     #app.run(host="0.0.0.0" ,port=80)
     #app.run()
     #app.run(host="0.0.0.0", port=443, ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
