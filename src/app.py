@@ -386,7 +386,7 @@ if __name__ == '__main__':
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
     #app.run(ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
-  #  app.run(host='127.0.0.1', port=80)
+    app.run(host="0.0.0.0", port=8080)
    # app.run(host="0.0.0.0" , port=80, ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
     #app.run()
     app.run(host="0.0.0.0", port=443, ssl_context=('/etc/ssl/certs/certi.crt', '/etc/ssl/private/certi.key'))
